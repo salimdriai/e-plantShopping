@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import { addItem } from "./CartSlice";
@@ -9,6 +9,9 @@ function ProductList() {
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
   const [addedToCart, setAddedToCart] = useState({});
 
+  const cartItems = useSelector((state) => state.cart.items);
+
+  console.log("cartItems", cartItems);
   const dispatch = useDispatch();
 
   const plantsArray = [
@@ -272,6 +275,7 @@ function ProductList() {
     color: "white",
     fontSize: "30px",
     textDecoration: "none",
+    position: "relative",
   };
   const handleCartClick = (e) => {
     e.preventDefault();
@@ -345,6 +349,17 @@ function ProductList() {
                   ></path>
                 </svg>
               </h1>
+              <p
+                style={{
+                  cursor: "pointer",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                {cartItems.length}
+              </p>
             </a>
           </div>
         </div>
@@ -365,12 +380,22 @@ function ProductList() {
                       alt={plant.name}
                     />
                     <div className="product-title">{plant.name}</div>
-                    {/*Similarly like the above plant.name show other details like description and cost*/}
+                    <div style={{ color: "red" }}>{plant.cost}</div>
+                    <div>{plant.description}</div>
                     <button
                       className="product-button"
                       onClick={() => handleAddToCart(plant)}
+                      style={{
+                        backgroundColor: cartItems.find(
+                          (item) => item.name === plant.name
+                        )
+                          ? "gray"
+                          : "green",
+                      }}
                     >
-                      Add to Cart
+                      {cartItems.find((item) => item.name === plant.name)
+                        ? "Added to cart"
+                        : "Add to cart"}
                     </button>
                   </div>
                 ))}
